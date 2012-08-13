@@ -1,0 +1,15 @@
+name: Realms
+version: 0.1
+description: 
+authors: [ryanturner, Sparky007] 
+website: https://github.com/Realmcraft/Realms
+
+main: com.github.realmcraft.realms
+database: true
+
+commands:
+
+permissions:
+	realms.*:
+		description: Gives access to all of the realms permissions
+		children: 
