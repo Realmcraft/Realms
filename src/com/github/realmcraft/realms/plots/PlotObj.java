@@ -1,26 +1,16 @@
-package com.github.realmcraft.realms.kingdoms.model;
+package com.github.realmcraft.realms.plots;
 
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
-
-
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Represents a town.
+ * Represents a plot.
  * @author Realmcraft Developer Team
  *
  */
 @Entity
-public class Resident implements Serializable {
-	@Id
-	private String name;
-	@Basic
-	private Date lastOnline;
-	@Basic
-	private Date firstOnline;
-	@Basic
-	private long onlineTime;
+public class Plot implements Serializable {
 	  
-} // end class Resident
+} // end class Chunk
 ////////////////////////////////////////////////////////////////////////////////

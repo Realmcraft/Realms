@@ -1,4 +1,4 @@
-package com.github.realmcraft.realms.kingdoms.model;
+package com.github.realmcraft.realms.towns;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,7 +12,7 @@ import com.sun.tools.javac.util.List;
  *
  */
 @Entity
-public class Town implements Serializable {
+public class TownObj implements Serializable {
 	@Id
 	private String name;
 	@Basic
@@ -153,7 +153,7 @@ public class Town implements Serializable {
 	 * Sets the created on of a Town object.
 	 * @param createdOn Date object for created on of the town.
 	 * @return New creation date object of the town.
-	 */
+	 */b32
 	public Date setCreatedOn(Date createdOn) {
 		this.createdOn = createdOn;
 		return this.createdOn;

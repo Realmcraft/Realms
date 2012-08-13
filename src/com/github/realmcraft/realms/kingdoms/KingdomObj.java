@@ -1,16 +1,16 @@
-package com.github.realmcraft.realms.kingdoms.model;
+package com.github.realmcraft.realms.kingdoms;
 
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * Represents a chunk.
+ * Represents a kingdom.
  * @author Realmcraft Developer Team
  *
  */
 @Entity
-public class Chunk implements Serializable {
+public class Kingdom implements Serializable {
 	  
-} // end class Chunk
+} // end class Kingdom
 ////////////////////////////////////////////////////////////////////////////////
