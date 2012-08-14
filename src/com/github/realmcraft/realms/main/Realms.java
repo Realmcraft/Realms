@@ -13,12 +13,13 @@ import com.github.realmcraft.realms.towns.TownMain;
 public abstract class Realms extends JavaPlugin {
 	
 	//variable declaration
+	private TownMain townCommandRunner;
 	
 	//main methods
 	//plugin enabled in bukkit
 	public void onEnable() {
 		getLogger().info("Realms has been enabled.");
-		PluginManager pm = this.getServer().getPluginManager();
+		
 		//register each package/section of the plugin
 		//announcements
 		
@@ -61,7 +62,9 @@ public abstract class Realms extends JavaPlugin {
 		//test
 		
 		//towns
-		pm.registerEvents(new TownMain(this), this);
+		townCommandRunner = new TownMain(this);
+		getCommand("town").setExecutor(townCommandRunner);
+		getCommand("townadmin").setExecutor(townCommandRunner);
 		
 		//vote
 		

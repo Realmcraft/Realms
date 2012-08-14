@@ -1,0 +1,42 @@
+When getting another Player by their name, make sure they are online
+Sometimes you want to get another player by the name entered by the player. Always make sure the player is online!
+public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+	Player target = (Bukkit.getServer().getPlayer(args[0]));
+        if (target == null) {
+           sender.sendMessage(args[0] + " is not online!");
+           return false;
+        }
+        return false;
+}
+Make sure the sender is a Player before casting
+Using simple code like this makes it possible:
+public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+	if (sender instanceof Player) {
+           Player player = (Player) sender;
+           // do something
+        } else {
+           sender.sendMessage("You must be a player!");
+           return false;
+        }
+        // do something
+        return false;
+}
+Check the arguments length
+Don't always assume the sender typed the correct amount of arguments.
+public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+	if (args.length > 4) {
+           sender.sendMessage("Too many arguments!");
+           return false;
+        } 
+        if (args.length < 2) {
+           sender.sendMessage("Not enough arguments!");
+           return false;
+        }
+}
+for(Player player: getServer().getOnlinePlayers()) {
+ 
+    if(player.hasPermission("send.recieve.message")) {
+        player.sendMessage("You were sent a message");
+    }
+ 
+}

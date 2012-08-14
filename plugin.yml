@@ -4,12 +4,70 @@ description:
 authors: [ryanturner, Sparky007] 
 website: https://github.com/Realmcraft/Realms
 
-main: com.github.realmcraft.realms
+main: com.github.realmcraft.realms.main.Realms
 database: true
 
 commands:
+  town:
+    description: Performs town related functions.
+    usage: The command you tried was not valid.  Try your /<command> command again!
+    aliases: [t]
+  townadmin:
+    description: Allows admins or the console to administer towns.
+    permissions: realms.townadmin
+    permission-message: You do not have administrative rights, and thus cannot use this command.  If this is in error, contact an administrator.
+    usage: The command you tried was not valid.  Try your /<command> command again!
+    aliases: [tadmin]
 
 permissions:
-	realms.*:
-		description: Gives access to all of the realms permissions
-		children: 
+  realms.*:
+    description: Gives access to all of the realms permissions
+    children:
+      realms.resident.*: true
+      realms.plot.*: true
+      realms.town.*: true
+      realms.kingdom.*: true
+      realms.residentadmin.*: true
+      realms.plotadmin.*: true
+      realms.townadmin.*: true
+      realms.kingdomadmin.*: true
+    default: false
+  realms.resident.*:
+    description: Gives access to all realms resident permissions (excluding admin)
+    children:
+    default: true
+  realms.plot.*:
+    description: Gives access to all realms plot permissions (excluding admin)
+    children:
+    default: true
+  realms.town.*:
+    description: Gives access to all realms town permissions (excluding admin)
+    children:
+      realms.town.spawn: true
+    default: true
+  realms.kingdom.*:
+    description: Gives access to all realms kingdom permissions (excluding admin)
+    children:
+    default: true
+  realms.residentadmin.*:
+    description: Allows access to realms resident administrative permissions
+    children:
+    default: op
+  realms.plotadmin.*:
+    description: Allows access to realms plot administrative permissions
+    children:
+    default: op
+  realms.townadmin.*:
+    description: Allows access to realms town administrative permissions
+    children:
+    default: op
+  realms.kingdomadmin.*:
+    description: Allows access to realms kingdom administrative permissions
+    children:
+    default: op
+  realms.town.spawn:
+    description: Allows use of /town spawn [townname] command
+    
+    
+     
+      

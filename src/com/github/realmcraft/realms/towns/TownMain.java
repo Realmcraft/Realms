@@ -1,29 +1,59 @@
 package com.github.realmcraft.realms.towns;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.github.realmcraft.realms.main.Realms;
 //Future features notes
 //Town population - size (hamlet, metropolis, etc.)
 
-public class TownMain implements Listener {
+public class TownMain implements CommandExecutor {
 
 //variable declarations
 	private Realms plugin;
 	
-	
 	//main methods:
-	public TownMain(Realms instance) {
-		plugin = instance;
+	public TownMain(Realms plugin) {
+		this.plugin = plugin;
 	}
 	
-	//Event Priority: normal is fine because it is a command that will not be cancelled.
-	@EventHandler
-	public void onCommand(){;}
+	//Command handler - sender = who sent the command, cmd = command that was executed, label = alias used, args = arguments after /town
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+	{
+		if(cmd.getName().equalsIgnoreCase("town"))
+		{
+			if(sender instanceof Player)
+			{		
+				//a player has typed /town - we'll be doing stuff here!
+				//start by determining the sub-command issued - will be args[0]
+				townspawn(sender, args);
+			}
+			else
+			{
+				sender.sendMessage("You must be a player to run /town commands!");
+				return false;
+			}
+		}
+		else if(cmd.getName().equalsIgnoreCase("townadmin"))
+		{
+			//user(or console) has typed /townadmin - we'll be doing stuff here!
+			//start by determining the sub-command issued - will be args[0]
+			testingonly(sender, args);
+		}
+		//default return false
+		return false;
+	}
 
-// event listeners (commands issued)
-   //listen for /t spawn [name]
+//command listeners from onCommand switch
+	//process town spawn command - syntax /town spawn [townname]
+	public void townspawn(CommandSender sender, String[] args)
+	{
+		System.out.println("You entered a town spawn command!");
+	}
+   ///t spawn [name]
       //lookup town "name" in data      
       //if name does not exist - tell player invalid town name and return (calls chat)
       //else lookup coordinates of town spawn in town name
@@ -37,6 +67,12 @@ public class TownMain implements Listener {
      //Test 3: no permissions - add town for player X at coord X,Z, set perm to no access, /t spawn player Y - check return
      //Test 4: no money - use NPC X which has no money, /t spawn city for player X - check return
 
-//Method to check if a given town exists or not
-
+	//Method to check if a given town exists or not
+	
+	
+	//testing only!
+	public void testingonly(CommandSender sender, String[] args)
+	{
+		System.out.println("You entered a townadmin command!");
+	}
 }
