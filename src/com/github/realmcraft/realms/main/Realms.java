@@ -10,7 +10,7 @@ import com.github.realmcraft.realms.towns.TownMain;
  * 
  * @author Sparky007 & ryan_turner
  */
-public abstract class Realms extends JavaPlugin {
+public class Realms extends JavaPlugin {
 	
 	//variable declaration
 	private TownMain townCommandRunner;
