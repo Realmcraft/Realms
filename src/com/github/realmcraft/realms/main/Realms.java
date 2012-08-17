@@ -1,6 +1,6 @@
 package com.github.realmcraft.realms.main;
 
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.realmcraft.realms.towns.TownMain;
@@ -19,8 +19,19 @@ public class Realms extends JavaPlugin {
 	//plugin enabled in bukkit
 	public void onEnable() {
 		getLogger().info("Realms has been enabled.");
+		FileConfiguration config = getConfig();
+		config.options().copyDefaults(true);
+		//load data from config
+		//...
+		//save config
+		saveConfig();
 		
-		//register each package/section of the plugin
+		//register handlers for each package/section of the plugin
+		//default handler put here for reference:
+		//testListener = new TestListener(this);
+		//PluginManager pm = getServer().getPlluginManager();
+		//pm.registerEvents(testListener, this);
+		
 		//announcements
 		
 		//arena

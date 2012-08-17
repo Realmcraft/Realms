@@ -13,6 +13,7 @@ import javax.persistence.*;
  *
  */
 @Entity
+@Table(name="Town_Objects")
 public class TownObj implements Serializable {
 	@Id
 	private String name;
