@@ -1,6 +1,6 @@
 name: Realms
 version: 0.1
-description: 
+description: Realms is a comprehensive plugin for use specifically with Realmcraft.  It is intended to fill the role of Kingdoms/Towny and similar.
 authors: [ryanturner, Sparky007] 
 website: https://github.com/Realmcraft/Realms
 
@@ -14,7 +14,7 @@ commands:
     aliases: [t]
   townadmin:
     description: Allows admins or the console to administer towns.
-    permissions: realms.townadmin
+    permissions: realms.townadmin.*
     permission-message: You do not have administrative rights, and thus cannot use this command.  If this is in error, contact an administrator.
     usage: The command you tried was not valid.  Try your /<command> command again!
     aliases: [tadmin]
