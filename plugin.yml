@@ -18,6 +18,14 @@ commands:
     permission-message: You do not have administrative rights, and thus cannot use this command.  If this is in error, contact an administrator.
     usage: The command you tried was not valid.  Try your /<command> command again!
     aliases: [tadmin]
+  resident:
+    description: Performs resident related fuunctions.
+    usage: The command you tried was not valid. Try your /<command> command again!
+    aliases: [r]
+  residentadmin:
+    description: Allows admins or the console to administer residents.
+    aliases: [radmin]
+    permissions: realms.residentadmin.*
 
 permissions:
   realms.*:

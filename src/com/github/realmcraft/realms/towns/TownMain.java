@@ -33,10 +33,8 @@ public class TownMain implements CommandExecutor {
 	
 	//Command handler - sender = who sent the command, cmd = command that was executed, label = alias used, args = arguments after /town
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		if(cmd.getName().equalsIgnoreCase("town"))
-		{
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if(cmd.getName().equalsIgnoreCase("town")) {
 			if(sender instanceof Player)
 			{		
 				//a player has typed /town - we'll be doing stuff here!
@@ -129,10 +127,9 @@ public class TownMain implements CommandExecutor {
 	public boolean townexists(String townname)
 	{
 		//find a town object with the specified name
-		if(em.find(TownObj.class, townname)))
-		{
-			
-		}
+//		if(em.find(TownObj.class, townname)) {
+//			
+//		}
 		return false;
 	}
 }
