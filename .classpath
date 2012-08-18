@@ -6,11 +6,6 @@
 			<attribute name="javadoc_location" value="http://jd.bukkit.org/apidocs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/ryan_turner/Downloads/eclipselink-2.4.0.v20120608-r11652.zip" sourcepath="/Users/ryanelliottturner/Downloads/eclipselink/jlib/eclipselink-src.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/Users/ryanelliottturner/Downloads/eclipselink/eclipselink-javadocs.zip!/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/home/ryan_turner/Downloads/ebean-2.7.7.zip"/>
 	<classpathentry kind="output" path="bin"/>

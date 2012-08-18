@@ -1,10 +1,15 @@
 package com.github.realmcraft.realms.resident;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 import com.avaje.ebean.validation.*;
+import com.github.realmcraft.realms.main.Realms;
 
 import org.bukkit.*;
 
@@ -18,15 +23,14 @@ import org.bukkit.*;
 public class Resident {
 	@Id
 	private String name;
+	@OneToMany(mappedBy="Resident")
+	private LinkedHashSet<String> friends;
 	private Date lastOnline;
 	@NotNull
 	private Date firstOnline;
 	private long onlineTime;
-	private List<String> friends;
 
-	
 	public Resident() {
-		
 	}
 	
 	public Resident(String name, Date lastOnline, Date firstOnline, long onlineTime) {
@@ -76,7 +80,7 @@ public class Resident {
 		return String.format("%d:%02d:%02d", time/3600, (time%3600)/60, (time%60));
 	}
 	
-	public List<String> getFriends() {
+	public LinkedHashSet<String> getFriends() {
 		return friends;
 	}
 	
@@ -92,11 +96,14 @@ public class Resident {
 		}
 	}
 	
-	public void setFriends(List<String> friends) {
+	public void setFriends(LinkedHashSet<String> friends) {
 		this.friends = friends;
 	}
 	
 	public boolean isFriendsWith(String name) {
+		if(name == null || friends == null) {
+			return false;
+		}
 		if(friends.contains(name)) {
 			return true;
 		} else {
@@ -105,7 +112,11 @@ public class Resident {
 	}
 
 	public void addFriend(String name) {
+		if(friends == null) {
+			friends = new LinkedHashSet<String>();
+		}
 		friends.add(name);
+		return;
 	}
 	
 	public void removeFriend(String name) {

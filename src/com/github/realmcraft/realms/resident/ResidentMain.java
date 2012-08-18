@@ -16,72 +16,62 @@ import com.github.realmcraft.realms.main.Realms;
 //Future features notes
 //Town population - size (hamlet, metropolis, etc.)
 
-public class ResidentMain implements CommandExecutor {
+public class ResidentMain extends Realms implements CommandExecutor {
 
-//variable declarations
-	private final Realms plugin;
-	
-	//initialize persistence
-	protected EntityManager em;
-	
-	//main methods:
-	public ResidentMain(Realms plugin) {
-		this.plugin = plugin;
+	public ResidentMain(EbeanServer database) {
+		this.database = database;
 	}
 	
-	//general handler, put here only for reference.
-	//@EventHandler(priority = EventPriority.NORMAL)
-	//public void onDeath(final EntityDeathEvent event) {
-	// // do something useful
-	//}
-	
-	//Command handler - sender = who sent the command, cmd = command that was executed, label = alias used, args = arguments after /town
-	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(cmd.getName().equalsIgnoreCase("resident")) {
-			if(sender instanceof Player)
-			{		
-				//a player has typed /town - we'll be doing stuff here!
-				//check if no options were passed after the town command.
-				if(args.length == 0)
-				{
+			if(sender instanceof Player) {		
+				if(args.length == 0) {
 					sender.sendMessage("You entered /resident, which is not a valid command.  Please see /resident help for a list of valid commands.");
 					return true;
-				}
-				else
-				{
+				} else {
 					if(args[0].equalsIgnoreCase("info")) {
 						return info(sender, args);
+					} else if(args[0].equalsIgnoreCase("friend")) {
+						if(args.length > 1) {
+							if(args.length == 3) { //Has specified /resident friend [comm] [name]
+
+						        
+								if(args[1].equalsIgnoreCase("add")) {
+									return addFriend(sender, args);
+								} else if(args[1].equalsIgnoreCase("remove")) {
+									return removeFriend(sender, args);
+								} else {
+									sender.sendMessage(ChatColor.RED + "Invalid subcommand; you may only add or remove friends.");
+									return true;
+								}
+							} else { //Has specified /resident friend [comm]
+								sender.sendMessage(ChatColor.RED + "Please specify a player.");
+								return true;								
+							}
+						} else {
+							return listFriends(sender, args);
+						}
 					}
 				}
-			}
-			else
-			{
+			} else {
 				sender.sendMessage("You must be a player to run /resident commands!");
 				return true;
 			}
 		}
-		else if(cmd.getName().equalsIgnoreCase("residentadmin"))
-		{
-			//user(or console) has typed /townadmin - we'll be doing stuff here!
-			//check if no options were passed after the townadmin command.
-			if(args.length == 0)
-			{
+		else if(cmd.getName().equalsIgnoreCase("residentadmin")) {
+			if(args.length == 0) {
 				sender.sendMessage("You entered /residentadmin, which is not a valid command.  Please see /residentadmin help for a list of valid commands.");
 				return true;
-			}
-			else
-			{
+			} else {
 				//start by determining the sub-command issued - will be args[0], and call that function.
 			}
 		}
 		//default return false
 		return false;
 	}
-
-//command listeners from onCommand switch
-	//process town spawn command - syntax /resident info [name]
-	private boolean info(CommandSender sender, String[] args)
+	
+	
+	public boolean info(CommandSender sender, String[] args)
 	{
 		String name;
         if (args.length > 1) { //Player specified a name
@@ -90,14 +80,13 @@ public class ResidentMain implements CommandExecutor {
             name = sender.getName();
         }
         
-        Resident resident = plugin.getDatabase().find(Resident.class).where().ieq("name", name).findUnique();
+        Resident resident = database.find(Resident.class).where().ieq("name", name).findUnique();
+
         if (resident == null) {
         	sender.sendMessage(ChatColor.RED + "That player does not exist.");
         	return true;
         }
         
-        plugin.getDatabase().save(resident);
-
         boolean onlineNow = false;
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getName().equals(resident.getName())) {
@@ -115,18 +104,80 @@ public class ResidentMain implements CommandExecutor {
         }
         sender.sendMessage(ChatColor.GOLD + "First Online: " + ChatColor.YELLOW + resident.getFirstOnline().toString());
         sender.sendMessage(ChatColor.GOLD + "Online Time: " + ChatColor.YELLOW + resident.getOnlineTimeString());
-        if(resident.getFriends() == null) {
-        	sender.sendMessage(ChatColor.GOLD + "Friends [0]: " + ChatColor.YELLOW + "None yet.");
-        } else {
-        	sender.sendMessage(ChatColor.GOLD + "Friends [" + (resident.getFriends()).size() + "]: " + ChatColor.YELLOW + resident.getFriendsString());
-        }
+        listFriends(sender, args);
         
        
         
         return true;
 	}
-	
-	
-//Supporting methods
 
+	public boolean addFriend(CommandSender sender, String[] args) {
+		if(args[2] == null) {
+			sender.sendMessage(ChatColor.RED + "Please specify a player.");
+			return true;
+		}
+		Resident friend = database.find(Resident.class).where().ieq("name", args[2]).findUnique();
+        if (friend == null) {
+        	sender.sendMessage(ChatColor.RED + "Player " + args[2] + " does not exist.");
+        	return true;
+        }
+        if (friend.getName().equals(sender.getName())) {
+        	sender.sendMessage(ChatColor.RED + "You cannot add yourself to your friends list.");
+        	return true;
+        }
+        
+        Resident resident = database.find(Resident.class).where().ieq("name", sender.getName()).findUnique();
+        if(resident.isFriendsWith(args[2])) {
+        	sender.sendMessage(ChatColor.RED + "You're already friends with " + args[2] + ".");
+        	return true;
+        }
+        sender.sendMessage(ChatColor.GREEN + "Added " + args[2] + " to your friends list.");
+        
+        resident.addFriend(args[2]);
+        database.save(resident);
+		return true;
+	}
+	
+	public boolean removeFriend(CommandSender sender, String[] args) {
+		if(args[1] == null) {
+			sender.sendMessage(ChatColor.RED + "Please specify a player.");
+			return true;
+		}
+		Resident friend = database.find(Resident.class).where().ieq("name", args[2]).findUnique();
+        if (friend == null) {
+        	sender.sendMessage(ChatColor.RED + "Player " + args[2] + " does not exist.");
+        	return true;
+        }
+        if (friend.getName().equals(sender.getName())) {
+        	sender.sendMessage(ChatColor.RED + "You cannot remove yourself to your friends list.");
+        	return true;
+        }        
+        Resident resident = database.find(Resident.class).where().ieq("name", sender.getName()).findUnique();
+        if(!resident.isFriendsWith(args[2])) {
+        	sender.sendMessage(ChatColor.RED + "You cannot remove someone who isn't a friend.");
+        	return true;
+        }
+        	
+        resident.removeFriend(friend.getName());
+        database.save(resident);
+        sender.sendMessage(ChatColor.GREEN + "Removed " + friend.getName() + " from your friends list.");
+		return true;
+	}
+	
+	public boolean listFriends(CommandSender sender, String[] args) {
+		Resident resident = database.find(Resident.class).where().ieq("name", sender.getName()).findUnique();
+		
+		if(resident.getFriends() == null) {
+        	sender.sendMessage(ChatColor.GOLD + "Friends [0]: " + ChatColor.YELLOW + "None yet.");
+        } else {
+        	sender.sendMessage(ChatColor.GOLD + "Friends [" + (resident.getFriends()).size() + "]: " + ChatColor.YELLOW + resident.getFriendsString());
+        }
+		
+		return true;
+	}
+	
+	
+	public static void setConnectedPlayersLastOnlineAsNow() {
+		return;
+	}
 }

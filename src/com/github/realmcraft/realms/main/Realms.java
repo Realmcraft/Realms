@@ -10,9 +10,12 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.avaje.ebean.EbeanServer;
 import com.github.realmcraft.realms.resident.Resident;
 import com.github.realmcraft.realms.resident.ResidentListener;
+import com.github.realmcraft.realms.resident.ResidentCommands;
 import com.github.realmcraft.realms.resident.ResidentMain;
+
 import com.github.realmcraft.realms.towns.TownMain;
 
 /**
@@ -24,11 +27,12 @@ public class Realms extends JavaPlugin {
 	
 	//variable declaration
 	private TownMain townCommandRunner;
-	private ResidentMain residentCommandRunner;
 	
-	//main methods
-	//plugin enabled in bukkit
+	public EbeanServer database;
+
 	public void onEnable() {
+		database = this.getDatabase();
+		
 		PluginDescriptionFile pdfFile = this.getDescription();
 		PluginManager pm = getServer().getPluginManager();
 		
@@ -45,7 +49,7 @@ public class Realms extends JavaPlugin {
 		//testListener = new TestListener(this);
 		//PluginManager pm = getServer().getPlluginManager();
 		//pm.registerEvents(testListener, this);
-		getServer().getPluginManager().registerEvents(new ResidentListener(this), this);
+		getServer().getPluginManager().registerEvents(new ResidentListener(database), this);
 		
 		//announcements
 		
@@ -78,8 +82,8 @@ public class Realms extends JavaPlugin {
 		//ranks
 		
 		//resident
-		getCommand("resident").setExecutor(new ResidentMain(this));
-		getCommand("residentadmin").setExecutor(new ResidentMain(this));
+		getCommand("resident").setExecutor(new ResidentMain(database));
+		getCommand("residentadmin").setExecutor(new ResidentMain(database));
 		//spleef
 		
 		//staff
