@@ -132,9 +132,9 @@ public class ResidentMain extends Realms implements CommandExecutor {
         	return true;
         }
         sender.sendMessage(ChatColor.GREEN + "Added " + args[2] + " to your friends list.");
-        
+        resident.setDatabase(database);
         resident.addFriend(args[2]);
-        database.save(resident);
+        
 		return true;
 	}
 	

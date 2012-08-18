@@ -10,10 +10,11 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.EbeanServer;
+import com.github.realmcraft.realms.resident.Friend;
 import com.github.realmcraft.realms.resident.Resident;
 import com.github.realmcraft.realms.resident.ResidentListener;
-import com.github.realmcraft.realms.resident.ResidentCommands;
 import com.github.realmcraft.realms.resident.ResidentMain;
 
 import com.github.realmcraft.realms.towns.TownMain;
@@ -38,7 +39,7 @@ public class Realms extends JavaPlugin {
 		
 		FileConfiguration config = getConfig();
 		config.options().copyDefaults(true);
-		
+
 		//load data from config
 		//...
 		//save config
@@ -122,6 +123,7 @@ public class Realms extends JavaPlugin {
 	public List<Class<?>> getDatabaseClasses() {
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		list.add(Resident.class);
+		list.add(Friend.class);
 		return list;
 	}
 	

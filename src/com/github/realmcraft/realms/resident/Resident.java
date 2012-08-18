@@ -8,8 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.*;
+
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.validation.*;
 import com.github.realmcraft.realms.main.Realms;
+import com.sun.org.apache.xerces.internal.dom.EntityImpl;
 
 import org.bukkit.*;
 
@@ -24,13 +28,23 @@ public class Resident {
 	@Id
 	private String name;
 	@OneToMany(mappedBy="Resident")
-	private LinkedHashSet<String> friends;
+	private HashSet<Friend> friends;
 	private Date lastOnline;
 	@NotNull
 	private Date firstOnline;
 	private long onlineTime;
-
+	@Transient
+	EbeanServer database;
+	
 	public Resident() {
+	}
+	
+	public void setDatabase(EbeanServer database) {
+		this.database = database;
+	}
+	
+	public Resident(EbeanServer database) {
+		this.database = database;
 	}
 	
 	public Resident(String name, Date lastOnline, Date firstOnline, long onlineTime) {
@@ -80,15 +94,15 @@ public class Resident {
 		return String.format("%d:%02d:%02d", time/3600, (time%3600)/60, (time%60));
 	}
 	
-	public LinkedHashSet<String> getFriends() {
+	public HashSet<Friend> getFriends() {
 		return friends;
 	}
 	
 	public String getFriendsString() {
 		String friendsString = null;
 		if(friends.size() > 0) {
-			for(String friend : friends) {
-				friendsString = friendsString + friend + ", ";
+			for(Friend friend : friends) {
+				friendsString = friendsString + friend.getFriendName() + ", ";
 			}
 			return friendsString.substring(0, friendsString.length() - 1);
 		} else {
@@ -96,7 +110,7 @@ public class Resident {
 		}
 	}
 	
-	public void setFriends(LinkedHashSet<String> friends) {
+	public void setFriends(HashSet<Friend> friends) {
 		this.friends = friends;
 	}
 	
@@ -112,10 +126,15 @@ public class Resident {
 	}
 
 	public void addFriend(String name) {
+
+		Friend friend = new Friend(this.name, name);
+		
 		if(friends == null) {
-			friends = new LinkedHashSet<String>();
+			friends = new HashSet<Friend>();
 		}
-		friends.add(name);
+		
+		friends.add(friend);
+		database.save(friend);
 		return;
 	}
 	
