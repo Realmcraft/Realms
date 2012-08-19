@@ -27,25 +27,17 @@ import org.bukkit.*;
 public class Resident {
 	@Id
 	private String name;
-	@OneToMany(mappedBy="Resident")
-	private HashSet<Friend> friends;
+	@OneToMany(cascade=CascadeType.ALL) 
+	List<Friend> friends;
 	private Date lastOnline;
 	@NotNull
 	private Date firstOnline;
 	private long onlineTime;
-	@Transient
-	EbeanServer database;
 	
 	public Resident() {
 	}
 	
-	public void setDatabase(EbeanServer database) {
-		this.database = database;
-	}
-	
-	public Resident(EbeanServer database) {
-		this.database = database;
-	}
+
 	
 	public Resident(String name, Date lastOnline, Date firstOnline, long onlineTime) {
 		this.name = name;
@@ -94,7 +86,7 @@ public class Resident {
 		return String.format("%d:%02d:%02d", time/3600, (time%3600)/60, (time%60));
 	}
 	
-	public HashSet<Friend> getFriends() {
+	public List<Friend> getFriends() {
 		return friends;
 	}
 	
@@ -110,7 +102,7 @@ public class Resident {
 		}
 	}
 	
-	public void setFriends(HashSet<Friend> friends) {
+	public void setFriends(List<Friend> friends) {
 		this.friends = friends;
 	}
 	
@@ -127,14 +119,11 @@ public class Resident {
 
 	public void addFriend(String name) {
 
-		Friend friend = new Friend(this.name, name);
+		Friend friend = new Friend(this, name);
 		
-		if(friends == null) {
-			friends = new HashSet<Friend>();
-		}
+		friends = new ArrayList<Friend>();
 		
 		friends.add(friend);
-		database.save(friend);
 		return;
 	}
 	

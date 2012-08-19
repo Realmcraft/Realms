@@ -1,5 +1,6 @@
 package com.github.realmcraft.realms.resident;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -132,9 +133,9 @@ public class ResidentMain extends Realms implements CommandExecutor {
         	return true;
         }
         sender.sendMessage(ChatColor.GREEN + "Added " + args[2] + " to your friends list.");
-        resident.setDatabase(database);
-        resident.addFriend(args[2]);
-        
+        resident.friends = new ArrayList<Friend>();
+        resident.friends.add(new Friend(resident, args[2]));
+        database.save(resident);
 		return true;
 	}
 	
@@ -157,7 +158,7 @@ public class ResidentMain extends Realms implements CommandExecutor {
         	sender.sendMessage(ChatColor.RED + "You cannot remove someone who isn't a friend.");
         	return true;
         }
-        	
+        
         resident.removeFriend(friend.getName());
         database.save(resident);
         sender.sendMessage(ChatColor.GREEN + "Removed " + friend.getName() + " from your friends list.");
