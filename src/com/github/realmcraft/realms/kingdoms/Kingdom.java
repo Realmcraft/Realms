@@ -11,6 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 public class Kingdom implements Serializable {
-	  
+	  @Id
+	  private String name;
 } // end class Kingdom
 ////////////////////////////////////////////////////////////////////////////////

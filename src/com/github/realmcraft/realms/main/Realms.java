@@ -1,7 +1,9 @@
 package com.github.realmcraft.realms.main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.*;
 
@@ -10,9 +12,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.EbeanServer;
-import com.github.realmcraft.realms.resident.Friend;
 import com.github.realmcraft.realms.resident.Resident;
 import com.github.realmcraft.realms.resident.ResidentListener;
 import com.github.realmcraft.realms.resident.ResidentMain;
@@ -27,12 +26,13 @@ import com.github.realmcraft.realms.towns.TownMain;
 public class Realms extends JavaPlugin {
 	
 	//variable declaration
-	private TownMain townCommandRunner;
-	
-	public EbeanServer database;
+	private static final String PERSISTENCE_UNIT_NAME = "Realms";
+	private static EntityManagerFactory factory;
+	protected EntityManager em;
 
 	public void onEnable() {
-		database = this.getDatabase();
+	    factory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+	    this.em = factory.createEntityManager();
 		
 		PluginDescriptionFile pdfFile = this.getDescription();
 		PluginManager pm = getServer().getPluginManager();
@@ -50,7 +50,7 @@ public class Realms extends JavaPlugin {
 		//testListener = new TestListener(this);
 		//PluginManager pm = getServer().getPlluginManager();
 		//pm.registerEvents(testListener, this);
-		getServer().getPluginManager().registerEvents(new ResidentListener(database), this);
+		getServer().getPluginManager().registerEvents(new ResidentListener(), this);
 		
 		//announcements
 		
@@ -83,8 +83,8 @@ public class Realms extends JavaPlugin {
 		//ranks
 		
 		//resident
-		getCommand("resident").setExecutor(new ResidentMain(database));
-		getCommand("residentadmin").setExecutor(new ResidentMain(database));
+		getCommand("resident").setExecutor(new ResidentMain());
+		getCommand("residentadmin").setExecutor(new ResidentMain());
 		//spleef
 		
 		//staff
@@ -103,28 +103,11 @@ public class Realms extends JavaPlugin {
 		//warps
 		
 		//wars
-		setupDatabase();
 	}
 	
 	//plugin disabled in bukkit
 	public void onDisable() {
 		getLogger().info("Realms has been disabled.");
-	}
-	
-	private void setupDatabase() {
-		try {
-			getDatabase().find(Resident.class).findRowCount();
-		} catch(PersistenceException ex) {
-			System.out.println("Installing database for " + getDescription().getName() + " due to first time usage");
-			installDDL();
-		}
-	}
-	
-	public List<Class<?>> getDatabaseClasses() {
-		List<Class<?>> list = new ArrayList<Class<?>>();
-		list.add(Resident.class);
-		list.add(Friend.class);
-		return list;
 	}
 	
 }

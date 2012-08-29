@@ -12,15 +12,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.avaje.ebean.*;
 import com.github.realmcraft.realms.main.Realms;
 //Future features notes
 //Town population - size (hamlet, metropolis, etc.)
 
 public class ResidentMain extends Realms implements CommandExecutor {
 
-	public ResidentMain(EbeanServer database) {
-		this.database = database;
+	public ResidentMain() {
+
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -81,8 +80,8 @@ public class ResidentMain extends Realms implements CommandExecutor {
             name = sender.getName();
         }
         
-        Resident resident = database.find(Resident.class).where().ieq("name", name).findUnique();
-
+        Resident resident = em.find(Resident.class, name);
+        
         if (resident == null) {
         	sender.sendMessage(ChatColor.RED + "That player does not exist.");
         	return true;
@@ -113,11 +112,12 @@ public class ResidentMain extends Realms implements CommandExecutor {
 	}
 
 	public boolean addFriend(CommandSender sender, String[] args) {
+		
 		if(args[2] == null) {
 			sender.sendMessage(ChatColor.RED + "Please specify a player.");
 			return true;
 		}
-		Resident friend = database.find(Resident.class).where().ieq("name", args[2]).findUnique();
+        Resident friend = em.find(Resident.class, args[2]);
         if (friend == null) {
         	sender.sendMessage(ChatColor.RED + "Player " + args[2] + " does not exist.");
         	return true;
@@ -126,16 +126,17 @@ public class ResidentMain extends Realms implements CommandExecutor {
         	sender.sendMessage(ChatColor.RED + "You cannot add yourself to your friends list.");
         	return true;
         }
-        
-        Resident resident = database.find(Resident.class).where().ieq("name", sender.getName()).findUnique();
+        em.getTransaction().begin();
+        Resident resident = em.find(Resident.class, sender.getName());
         if(resident.isFriendsWith(args[2])) {
         	sender.sendMessage(ChatColor.RED + "You're already friends with " + args[2] + ".");
         	return true;
         }
         sender.sendMessage(ChatColor.GREEN + "Added " + args[2] + " to your friends list.");
-        resident.friends = new ArrayList<Friend>();
-        resident.friends.add(new Friend(resident, args[2]));
-        database.save(resident);
+        resident.friends = new ArrayList<Resident>();
+        resident.friends.add(friend);
+        em.persist(resident);
+        em.getTransaction().commit();
 		return true;
 	}
 	
@@ -144,7 +145,7 @@ public class ResidentMain extends Realms implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "Please specify a player.");
 			return true;
 		}
-		Resident friend = database.find(Resident.class).where().ieq("name", args[2]).findUnique();
+		Resident friend = em.find(Resident.class, args[2]);
         if (friend == null) {
         	sender.sendMessage(ChatColor.RED + "Player " + args[2] + " does not exist.");
         	return true;
@@ -153,20 +154,23 @@ public class ResidentMain extends Realms implements CommandExecutor {
         	sender.sendMessage(ChatColor.RED + "You cannot remove yourself to your friends list.");
         	return true;
         }        
-        Resident resident = database.find(Resident.class).where().ieq("name", sender.getName()).findUnique();
+        Resident resident = em.find(Resident.class, sender.getName());
         if(!resident.isFriendsWith(args[2])) {
         	sender.sendMessage(ChatColor.RED + "You cannot remove someone who isn't a friend.");
         	return true;
         }
         
+        em.getTransaction().begin();
         resident.removeFriend(friend.getName());
-        database.save(resident);
+        em.persist(resident);
+        em.getTransaction().commit();
+        
         sender.sendMessage(ChatColor.GREEN + "Removed " + friend.getName() + " from your friends list.");
 		return true;
 	}
 	
 	public boolean listFriends(CommandSender sender, String[] args) {
-		Resident resident = database.find(Resident.class).where().ieq("name", sender.getName()).findUnique();
+		Resident resident = em.find(Resident.class, sender.getName());
 		
 		if(resident.getFriends() == null) {
         	sender.sendMessage(ChatColor.GOLD + "Friends [0]: " + ChatColor.YELLOW + "None yet.");

@@ -9,9 +9,6 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-import com.avaje.ebean.Ebean;
-import com.avaje.ebean.EbeanServer;
-import com.avaje.ebean.validation.*;
 import com.github.realmcraft.realms.main.Realms;
 import com.sun.org.apache.xerces.internal.dom.EntityImpl;
 
@@ -27,10 +24,10 @@ import org.bukkit.*;
 public class Resident {
 	@Id
 	private String name;
-	@OneToMany(cascade=CascadeType.ALL) 
-	List<Friend> friends;
+	@OneToMany
+	List<Resident> friends;
 	private Date lastOnline;
-	@NotNull
+
 	private Date firstOnline;
 	private long onlineTime;
 	
@@ -86,15 +83,15 @@ public class Resident {
 		return String.format("%d:%02d:%02d", time/3600, (time%3600)/60, (time%60));
 	}
 	
-	public List<Friend> getFriends() {
+	public List<Resident> getFriends() {
 		return friends;
 	}
 	
 	public String getFriendsString() {
 		String friendsString = null;
 		if(friends.size() > 0) {
-			for(Friend friend : friends) {
-				friendsString = friendsString + friend.getFriendName() + ", ";
+			for(Resident friend : friends) {
+				friendsString = friendsString + friend.getName() + ", ";
 			}
 			return friendsString.substring(0, friendsString.length() - 1);
 		} else {
@@ -102,7 +99,7 @@ public class Resident {
 		}
 	}
 	
-	public void setFriends(List<Friend> friends) {
+	public void setFriends(List<Resident> friends) {
 		this.friends = friends;
 	}
 	
@@ -117,11 +114,9 @@ public class Resident {
 		}
 	}
 
-	public void addFriend(String name) {
+	public void addFriend(Resident friend) {
 
-		Friend friend = new Friend(this, name);
-		
-		friends = new ArrayList<Friend>();
+		friends = new ArrayList<Resident>();
 		
 		friends.add(friend);
 		return;

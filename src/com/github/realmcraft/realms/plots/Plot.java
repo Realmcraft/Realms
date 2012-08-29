@@ -11,6 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 public class Plot implements Serializable {
-	  
+	  @Id
+	  private int id;	  
 } // end class Chunk
 ////////////////////////////////////////////////////////////////////////////////
